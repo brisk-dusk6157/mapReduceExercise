@@ -10,15 +10,15 @@ func (w *Worker) execMap(taskId int, file string) (intermediaryFiles map[int]str
 
 	kvs := w.impl.Map(file, content)
 
-	partedKvs := make(map[int][]*mr_client.KeyValue)
+	partedKvs := make(map[int][]mr_client.KeyValue)
 	for _, kv := range kvs {
 		part := w.impl.Hash(kv.Key) % w.nParts
-		partedKvs[part] = append(partedKvs[part], &kv)
+		partedKvs[part] = append(partedKvs[part], kv)
 	}
 
 	intermediaryFiles = make(map[int]string)
 	for part, kvs := range partedKvs {
-		intermediaryFiles[part] = fmt.Sprintf("intermediary-%d-%d.json", taskId, part)
+		intermediaryFiles[part] = fmt.Sprintf("intermediary-%d-%d.json", part, taskId)
 		writeKeyValues(intermediaryFiles[part], kvs)
 	}
 	return

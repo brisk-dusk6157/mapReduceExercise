@@ -42,9 +42,10 @@ func New(implPath string, files []string, nParts int) Coordinator {
 	}
 	for i, file := range files {
 		c.mTasks[i] = &MapTask{
-			id:    i,
-			file:  file,
-			state: STATE_IDLE,
+			id:      i,
+			file:    file,
+			state:   STATE_IDLE,
+			outputs: make(map[int]string),
 		}
 	}
 	for i := 0; i < nParts; i++ {
@@ -60,7 +61,6 @@ func New(implPath string, files []string, nParts int) Coordinator {
 func (c *Coordinator) Done() bool {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
-	c.debugPrintState()
 	for _, mTask := range c.mTasks {
 		if mTask.state != STATE_DONE {
 			return false
@@ -79,7 +79,7 @@ func (c *Coordinator) debugPrintState() {
 	defer c.mu.RUnlock()
 	fmt.Println("mTasks:")
 	for _, mTask := range c.mTasks {
-		fmt.Printf("- id=%d, state=%d\n", mTask.id, mTask.state)
+		fmt.Printf("- id=%d, state=%d, outputs=%v\n", mTask.id, mTask.state, mTask.outputs)
 	}
 	fmt.Println("rTasks:")
 	for _, rTask := range c.rTasks {

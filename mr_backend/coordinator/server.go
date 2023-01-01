@@ -20,6 +20,7 @@ func (c *Coordinator) Serve() {
 	fmt.Println("Serving at 127.0.0.1:2534")
 
 	for !c.Done() {
-		time.Sleep(1 * time.Second)
+		c.debugPrintState()
+		time.Sleep(5 * time.Second)
 	}
 }

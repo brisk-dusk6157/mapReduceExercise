@@ -33,8 +33,12 @@ func Run(coordinatorAddr string) {
 			w.callSetMapTaskDone(task.TaskId, intermediaryFiles)
 		case schemas.TASK_REDUCE:
 			intermediaryFiles := w.waitReduceInputs(task.ReducePart)
-			result := w.execReduce(task.ReducePart, intermediaryFiles)
-			w.callSetReduceTaskDone(task.TaskId, result)
+			if len(intermediaryFiles) == 0 {
+				w.callSetReduceTaskDone(task.TaskId, "")
+			} else {
+				result := w.execReduce(task.ReducePart, intermediaryFiles)
+				w.callSetReduceTaskDone(task.TaskId, result)
+			}
 		case schemas.TASK_WAIT:
 			time.Sleep(1 * time.Second)
 		case schemas.TASK_STOP:

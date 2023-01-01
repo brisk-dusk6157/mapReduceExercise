@@ -1,6 +1,8 @@
 package coordinator
 
-import "github.com/brisk-dusk6157/mapReduceExercise/mr_backend/schemas"
+import (
+	"github.com/brisk-dusk6157/mapReduceExercise/mr_backend/schemas"
+)
 
 func (c *Coordinator) GetReduceInputs(args *schemas.GetReduceInputsArgs, reply *schemas.GetReduceInputsReply) error {
 	c.mu.RLock()
@@ -15,7 +17,10 @@ func (c *Coordinator) GetReduceInputs(args *schemas.GetReduceInputsArgs, reply *
 
 	reply.Ready = true
 	for _, mTask := range c.mTasks {
-		reply.IntermediaryFiles = append(reply.IntermediaryFiles, mTask.outputs[args.Part])
+		file := mTask.outputs[args.Part]
+		if file != "" {
+			reply.IntermediaryFiles = append(reply.IntermediaryFiles, file)
+		}
 	}
 	return nil
 }
