@@ -17,8 +17,8 @@ func (c *Coordinator) GetReduceInputs(args *schemas.GetReduceInputsArgs, reply *
 
 	reply.Ready = true
 	for _, mTask := range c.mTasks {
-		file := mTask.outputs[args.Part]
-		if file != "" {
+		file, exists := mTask.outputs[args.Part]
+		if exists {
 			reply.IntermediaryFiles = append(reply.IntermediaryFiles, file)
 		}
 	}

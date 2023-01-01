@@ -8,6 +8,8 @@ import (
 	"strings"
 )
 
+// TODO: Use temp files and rename for atomic behavior
+
 func readFileContent(filename string) string {
 	data, err := os.ReadFile(filename)
 	if err != nil {

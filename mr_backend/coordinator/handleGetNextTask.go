@@ -3,6 +3,11 @@ package coordinator
 import "github.com/brisk-dusk6157/mapReduceExercise/mr_backend/schemas"
 
 func (c *Coordinator) GetNextTask(args *schemas.GetNextTaskArgs, reply *schemas.GetNextTaskReply) error {
+	// TODO: handle tasks timeouts
+	//   - where to save startTime
+	//   - how to check for timeout
+	//   - what to do with Done reports from old tasks
+	//   - limiting retries
 	c.mu.Lock()
 	for mTaskId, mTask := range c.mTasks {
 		if mTask.state == STATE_IDLE {

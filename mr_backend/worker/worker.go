@@ -33,6 +33,7 @@ func Run(coordinatorAddr string) {
 			w.callSetMapTaskDone(task.TaskId, intermediaryFiles)
 		case schemas.TASK_REDUCE:
 			intermediaryFiles := w.waitReduceInputs(task.ReducePart)
+			// TODO: figure out a clean way to handle "empty" partitions
 			if len(intermediaryFiles) == 0 {
 				w.callSetReduceTaskDone(task.TaskId, "")
 			} else {

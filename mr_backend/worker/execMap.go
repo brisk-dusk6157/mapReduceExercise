@@ -10,6 +10,7 @@ func (w *Worker) execMap(taskId int, file string) (intermediaryFiles map[int]str
 
 	kvs := w.impl.Map(file, content)
 
+	// TODO: is it possible to do map[int][]*mr_client.KeyValue?
 	partedKvs := make(map[int][]mr_client.KeyValue)
 	for _, kv := range kvs {
 		part := w.impl.Hash(kv.Key) % w.nParts
