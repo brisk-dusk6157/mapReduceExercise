@@ -2,6 +2,7 @@ package worker
 
 import (
 	"github.com/brisk-dusk6157/mapReduceExercise/mr_client"
+	"hash/fnv"
 	"log"
 	"plugin"
 )
@@ -9,6 +10,7 @@ import (
 type Impl struct {
 	Map    func(string, string) []mr_client.KeyValue
 	Reduce func(string, []string) []string
+	Hash   func(string) int
 }
 
 func loadImpl(path string) Impl {
@@ -29,5 +31,12 @@ func loadImpl(path string) Impl {
 	return Impl{
 		Map:    mapf,
 		Reduce: reducef,
+		Hash:   ihash,
 	}
+}
+
+func ihash(key string) int {
+	h := fnv.New32a()
+	h.Write([]byte(key))
+	return int(h.Sum32() & 0x7fffffff)
 }

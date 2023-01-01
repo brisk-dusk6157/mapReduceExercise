@@ -10,6 +10,6 @@ func (c *Coordinator) SetMapTaskDone(args *schemas.SetMapTaskDoneArgs, reply *sc
 
 	mTask := c.mTasks[args.TaskId]
 	mTask.state = STATE_DONE
-	mTask.outputs = args.Files
+	mTask.outputs = args.IntermediaryFiles
 	return nil
 }

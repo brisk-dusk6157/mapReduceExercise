@@ -1,8 +1,25 @@
 package worker
 
-import "fmt"
+import (
+	"fmt"
+	"github.com/brisk-dusk6157/mapReduceExercise/mr_client"
+)
 
-func (w *Worker) execMap(file string) map[int]string {
-	fmt.Printf("mTask done file=%s\n", file)
-	return nil
+func (w *Worker) execMap(taskId int, file string) (intermediaryFiles map[int]string) {
+	content := readFileContent(file)
+
+	kvs := w.impl.Map(file, content)
+
+	partedKvs := make(map[int][]*mr_client.KeyValue)
+	for _, kv := range kvs {
+		part := w.impl.Hash(kv.Key) % w.nParts
+		partedKvs[part] = append(partedKvs[part], &kv)
+	}
+
+	intermediaryFiles = make(map[int]string)
+	for part, kvs := range partedKvs {
+		intermediaryFiles[part] = fmt.Sprintf("intermediary-%d-%d.json", taskId, part)
+		writeKeyValues(intermediaryFiles[part], kvs)
+	}
+	return
 }

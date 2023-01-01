@@ -1,8 +1,8 @@
 package schemas
 
 type SetMapTaskDoneArgs struct {
-	TaskId int
-	Files  map[int]string
+	TaskId            int
+	IntermediaryFiles map[int]string
 }
 
 type SetMapTaskDoneReply struct {

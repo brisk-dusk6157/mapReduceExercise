@@ -29,8 +29,8 @@ func Run(coordinatorAddr string) {
 		task := w.callGetNextTask()
 		switch task.Task {
 		case schemas.TASK_MAP:
-			files := w.execMap(task.MapFile)
-			w.callSetMapTaskDone(task.TaskId, files)
+			intermediaryFiles := w.execMap(task.TaskId, task.MapFile)
+			w.callSetMapTaskDone(task.TaskId, intermediaryFiles)
 		case schemas.TASK_REDUCE:
 			intermediaryFiles := w.waitReduceInputs(task.ReducePart)
 			result := w.execReduce(task.ReducePart, intermediaryFiles)
