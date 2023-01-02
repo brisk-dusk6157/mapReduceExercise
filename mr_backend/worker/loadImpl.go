@@ -8,9 +8,9 @@ import (
 )
 
 type Impl struct {
-	Map    func(string, string) []mr_client.KeyValue
-	Reduce func(string, []string) []string
-	Hash   func(string) int
+	Map       func(string, string) []mr_client.KeyValue
+	Reduce    func(string, []string) []string
+	Partition func(string, int) int
 }
 
 func loadImpl(path string) Impl {
@@ -29,10 +29,14 @@ func loadImpl(path string) Impl {
 	}
 	reducef := xreducef.(func(string, []string) []string)
 	return Impl{
-		Map:    mapf,
-		Reduce: reducef,
-		Hash:   ihash,
+		Map:       mapf,
+		Reduce:    reducef,
+		Partition: partition,
 	}
+}
+
+func partition(key string, nParts int) int {
+	return ihash(key) % nParts
 }
 
 func ihash(key string) int {
