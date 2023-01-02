@@ -7,8 +7,8 @@ func (c *Coordinator) SetReduceTaskDone(args *schemas.SetReduceTaskDoneArgs, rep
 	defer c.mu.Unlock()
 
 	rTask := c.rTasks[args.TaskId]
-	if rTask.state == STATE_IN_PROGRESS && args.Shot == rTask.shot {
-		rTask.state = STATE_DONE
+	if rTask.state == stateInProgress && args.Shot == rTask.shot {
+		rTask.state = stateDone
 		rTask.output = args.File
 	}
 	return nil

@@ -9,7 +9,7 @@ func (c *Coordinator) GetReduceInputs(args *schemas.GetReduceInputsArgs, reply *
 	defer c.mu.RUnlock()
 
 	for _, mTask := range c.mTasks {
-		if mTask.state != STATE_DONE {
+		if mTask.state != stateDone {
 			reply.Ready = false
 			return nil
 		}

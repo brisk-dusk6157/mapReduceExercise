@@ -13,8 +13,8 @@ func (c *Coordinator) GetNextTask(args *schemas.GetNextTaskArgs, reply *schemas.
 	//   - limiting retries
 	c.mu.Lock()
 	for mTaskId, mTask := range c.mTasks {
-		if mTask.state == STATE_IDLE {
-			mTask.state = STATE_IN_PROGRESS
+		if mTask.state == stateIdle {
+			mTask.state = stateInProgress
 			mTask.started = time.Now()
 			mTask.shot++
 			reply.Task = schemas.TASK_MAP
@@ -26,8 +26,8 @@ func (c *Coordinator) GetNextTask(args *schemas.GetNextTaskArgs, reply *schemas.
 		}
 	}
 	for rTaskId, rTask := range c.rTasks {
-		if rTask.state == STATE_IDLE {
-			rTask.state = STATE_IN_PROGRESS
+		if rTask.state == stateIdle {
+			rTask.state = stateInProgress
 			rTask.started = time.Now()
 			rTask.shot++
 			reply.Task = schemas.TASK_REDUCE

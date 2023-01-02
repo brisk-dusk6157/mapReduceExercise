@@ -6,9 +6,9 @@ import (
 	"time"
 )
 
-const STATE_IDLE = 0
-const STATE_IN_PROGRESS = 1
-const STATE_DONE = 2
+const stateIdle = 0
+const stateInProgress = 1
+const stateDone = 2
 
 type MapTask struct {
 	id      int
@@ -53,7 +53,7 @@ func New(implPath string, files []string, nParts int) Coordinator {
 		c.mTasks[i] = &MapTask{
 			id:      i,
 			file:    file,
-			state:   STATE_IDLE,
+			state:   stateIdle,
 			outputs: make(map[int]string),
 		}
 	}
@@ -61,7 +61,7 @@ func New(implPath string, files []string, nParts int) Coordinator {
 		c.rTasks[i] = &ReduceTask{
 			id:    i,
 			part:  i,
-			state: STATE_IDLE,
+			state: stateIdle,
 		}
 	}
 	return c
@@ -71,12 +71,12 @@ func (c *Coordinator) Done() bool {
 	c.mu.RLock()
 	defer c.mu.RUnlock()
 	for _, mTask := range c.mTasks {
-		if mTask.state != STATE_DONE {
+		if mTask.state != stateDone {
 			return false
 		}
 	}
 	for _, rTask := range c.rTasks {
-		if rTask.state != STATE_DONE {
+		if rTask.state != stateDone {
 			return false
 		}
 	}

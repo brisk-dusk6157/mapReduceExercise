@@ -10,14 +10,14 @@ func (c *Coordinator) monitor(quit chan bool) {
 		default:
 			c.mu.Lock()
 			for _, mTask := range c.mTasks {
-				if mTask.state == STATE_IN_PROGRESS && time.Now().Sub(mTask.started) > c.taskTimeout {
-					mTask.state = STATE_IDLE
+				if mTask.state == stateInProgress && time.Now().Sub(mTask.started) > c.taskTimeout {
+					mTask.state = stateIdle
 					mTask.started = time.Time{}
 				}
 			}
 			for _, rTask := range c.rTasks {
-				if rTask.state == STATE_IN_PROGRESS && time.Now().Sub(rTask.started) > c.taskTimeout {
-					rTask.state = STATE_IDLE
+				if rTask.state == stateInProgress && time.Now().Sub(rTask.started) > c.taskTimeout {
+					rTask.state = stateIdle
 					rTask.started = time.Time{}
 				}
 			}

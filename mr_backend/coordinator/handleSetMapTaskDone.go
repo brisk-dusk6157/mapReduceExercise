@@ -9,8 +9,8 @@ func (c *Coordinator) SetMapTaskDone(args *schemas.SetMapTaskDoneArgs, reply *sc
 	defer c.mu.Unlock()
 
 	mTask := c.mTasks[args.TaskId]
-	if mTask.state == STATE_IN_PROGRESS && args.Shot == mTask.shot {
-		mTask.state = STATE_DONE
+	if mTask.state == stateInProgress && args.Shot == mTask.shot {
+		mTask.state = stateDone
 		mTask.outputs = args.IntermediaryFiles
 	}
 
