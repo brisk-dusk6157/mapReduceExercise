@@ -2,6 +2,8 @@ package worker
 
 import (
 	"fmt"
+	"sort"
+	"strings"
 )
 
 func (w *Worker) execReduce(part int, intermediaryFiles []string) string {
@@ -13,9 +15,19 @@ func (w *Worker) execReduce(part int, intermediaryFiles []string) string {
 		}
 	}
 
+	keys := make([]string, len(keyBatches))
+	i := 0
+	for key := range keyBatches {
+		keys[i] = key
+		i++
+	}
+	sort.Slice(keys, func(i, j int) bool {
+		return strings.Compare(keys[i], keys[j]) == -1
+	})
+
 	var outputLines []string
-	for key, batch := range keyBatches {
-		lines := w.impl.Reduce(key, batch)
+	for _, key := range keys {
+		lines := w.impl.Reduce(key, keyBatches[key])
 		outputLines = append(outputLines, lines...)
 	}
 
