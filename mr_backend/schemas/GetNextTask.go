@@ -11,6 +11,7 @@ type GetNextTaskArgs struct {
 type GetNextTaskReply struct {
 	Task       string
 	TaskId     int
+	Shot       int
 	MapFile    string
 	ReducePart int
 }

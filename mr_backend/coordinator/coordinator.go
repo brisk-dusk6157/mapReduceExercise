@@ -3,6 +3,7 @@ package coordinator
 import (
 	"fmt"
 	"sync"
+	"time"
 )
 
 const STATE_IDLE = 0
@@ -12,20 +13,27 @@ const STATE_DONE = 2
 type MapTask struct {
 	id      int
 	file    string
-	state   int
 	outputs map[int]string
+
+	state   int
+	started time.Time
+	shot    int
 }
 
 type ReduceTask struct {
 	id     int
 	part   int
-	state  int
 	output string
+
+	state   int
+	started time.Time
+	shot    int
 }
 
 type Coordinator struct {
-	implPath string
-	nParts   int
+	implPath    string
+	nParts      int
+	taskTimeout time.Duration
 
 	mu sync.RWMutex
 
@@ -35,10 +43,11 @@ type Coordinator struct {
 
 func New(implPath string, files []string, nParts int) Coordinator {
 	c := Coordinator{
-		implPath: implPath,
-		nParts:   nParts,
-		mTasks:   make(map[int]*MapTask),
-		rTasks:   make(map[int]*ReduceTask),
+		implPath:    implPath,
+		nParts:      nParts,
+		mTasks:      make(map[int]*MapTask),
+		rTasks:      make(map[int]*ReduceTask),
+		taskTimeout: 3 * time.Second,
 	}
 	for i, file := range files {
 		c.mTasks[i] = &MapTask{
@@ -79,11 +88,11 @@ func (c *Coordinator) debugPrintState() {
 	defer c.mu.RUnlock()
 	fmt.Println("mTasks:")
 	for _, mTask := range c.mTasks {
-		fmt.Printf("- id=%d, state=%d, outputs=%v\n", mTask.id, mTask.state, mTask.outputs)
+		fmt.Printf("- id=%d, state=%d, shot=%d, outputs=%v\n", mTask.id, mTask.state, mTask.shot, mTask.outputs)
 	}
 	fmt.Println("rTasks:")
 	for _, rTask := range c.rTasks {
-		fmt.Printf("- id=%d, state=%d\n", rTask.id, rTask.state)
+		fmt.Printf("- id=%d, state=%d, shot=%d, \n", rTask.id, rTask.state, rTask.shot)
 	}
-	fmt.Print("===========================\n\n")
+	fmt.Print("===========================\n")
 }

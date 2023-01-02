@@ -30,15 +30,15 @@ func Run(coordinatorAddr string) {
 		switch task.Task {
 		case schemas.TASK_MAP:
 			intermediaryFiles := w.execMap(task.TaskId, task.MapFile)
-			w.callSetMapTaskDone(task.TaskId, intermediaryFiles)
+			w.callSetMapTaskDone(task.TaskId, task.Shot, intermediaryFiles)
 		case schemas.TASK_REDUCE:
 			intermediaryFiles := w.waitReduceInputs(task.ReducePart)
 			// TODO: figure out a clean way to handle "empty" partitions
 			if len(intermediaryFiles) == 0 {
-				w.callSetReduceTaskDone(task.TaskId, "")
+				w.callSetReduceTaskDone(task.TaskId, task.Shot, "")
 			} else {
 				result := w.execReduce(task.ReducePart, intermediaryFiles)
-				w.callSetReduceTaskDone(task.TaskId, result)
+				w.callSetReduceTaskDone(task.TaskId, task.Shot, result)
 			}
 		case schemas.TASK_WAIT:
 			time.Sleep(1 * time.Second)

@@ -19,8 +19,12 @@ func (c *Coordinator) Serve() {
 	go http.Serve(l, nil)
 	fmt.Println("Serving at 127.0.0.1:2534")
 
+	quit := make(chan bool)
+	go c.monitor(quit)
+
 	for !c.Done() {
 		c.debugPrintState()
 		time.Sleep(5 * time.Second)
 	}
+	quit <- true
 }

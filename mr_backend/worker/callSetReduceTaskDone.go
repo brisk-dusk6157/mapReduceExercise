@@ -5,9 +5,10 @@ import (
 	"log"
 )
 
-func (w *Worker) callSetReduceTaskDone(taskId int, file string) schemas.SetReduceTaskDoneReply {
+func (w *Worker) callSetReduceTaskDone(taskId int, shot int, file string) schemas.SetReduceTaskDoneReply {
 	args := schemas.SetReduceTaskDoneArgs{
 		TaskId: taskId,
+		Shot:   shot,
 		File:   file,
 	}
 	reply := schemas.SetReduceTaskDoneReply{}
